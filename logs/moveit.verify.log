@@ -1,0 +1,9 @@
+>>> building MOVEIT (release-less prod build, no inline-sync)…
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+>>> starting MOVEIT on :8090 (shared DDB http://localhost:8082, S3 http://localhost:9002, KMS http://localhost:4566, Temporal http://localhost:7233)
+[2m2026-07-03T21:48:40.333089Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m starting orchestrator [3mbind[0m[2m=[0m127.0.0.1:8090 [3mcursor_table[0m[2m=[0mmoveit_cursors [3mstate_table[0m[2m=[0mmoveit_state
+[2m2026-07-03T21:48:40.368738Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m using golang-table resolver [3mconnectors[0m[2m=[0moauth_connectors_local
+[2m2026-07-03T21:48:40.369909Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m temporal enabled, connecting client [3mendpoint[0m[2m=[0mhttp://localhost:7233 [3mtask_queue[0m[2m=[0mmoveit-sync
+[2m2026-07-03T21:48:42.033750Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m listening [3maddr[0m[2m=[0m127.0.0.1:8090
+[2m2026-07-03T21:48:42.033814Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m running both axum server and temporal worker concurrently
+[2m2026-07-03T21:49:31.888923Z[0m [32m INFO[0m [2mMOVEIT[0m[2m:[0m shutdown signal received
