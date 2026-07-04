@@ -50,6 +50,11 @@ auth=(-H "Authorization: Bearer $API_KEY")
 created_tenant=""
 connector_id=""
 
+# HURL_VERBOSE=1 makes hurl print the full real HTTP exchange (request line,
+# headers, body, response) for an auditable trail. Default off (concise --test).
+HURL_BIN=(hurl --test)
+[ -n "${HURL_VERBOSE:-}" ] && HURL_BIN+=(--very-verbose)
+
 # ---- preflight --------------------------------------------------------------
 for bin in hurl curl jq; do
   command -v "$bin" >/dev/null 2>&1 || { echo "missing required command: $bin"; exit 127; }
@@ -64,7 +69,7 @@ echo "   base=$BASE provider=$PROVIDER tenant=$TENANT mode=$([ "$LIVE" = 1 ] && 
 cleanup() {
   echo "== cleanup =="
   if [ -n "$connector_id" ]; then
-    hurl --test \
+    "${HURL_BIN[@]}" \
       --variable base="$BASE" --variable api_key="$API_KEY" \
       --variable connector_id="$connector_id" \
       04_cleanup.hurl >/dev/null 2>&1 \
@@ -107,14 +112,14 @@ rc=0
 
 # ---- Phase 5 first: negative/contract guards (no token/worker needed) -------
 echo "== negatives (auth / validation / not-found) =="
-hurl --test \
+"${HURL_BIN[@]}" \
   --variable base="$BASE" --variable api_key="$API_KEY" \
   --variable tenant="$TENANT" --variable provider="$PROVIDER" \
   05_negatives.hurl || rc=1
 
 # ---- Phase 1: add the connector (+ resources + configure) -------------------
 echo "== add connector =="
-hurl --test \
+"${HURL_BIN[@]}" \
   --variable base="$BASE" --variable api_key="$API_KEY" \
   --variable tenant="$TENANT" --variable provider="$PROVIDER" \
   --variable provider_token="$CONN_TOKEN" --variable conn_name="$CONN_NAME" \
@@ -132,7 +137,7 @@ echo "   connector_id=$connector_id"
 
 # ---- Phase 2: trigger a sync (202 contract) ---------------------------------
 echo "== trigger sync =="
-hurl --test \
+"${HURL_BIN[@]}" \
   --variable base="$BASE" --variable api_key="$API_KEY" \
   --variable connector_id="$connector_id" \
   02_trigger_sync.hurl || rc=1
@@ -165,7 +170,7 @@ if [ "$LIVE" = 1 ]; then
 
   if [ -n "$source_id" ] && [ "$rc" = 0 ]; then
     echo "== verify drained data shows up (read side) =="
-    hurl --test \
+    "${HURL_BIN[@]}" \
       --variable base="$BASE" --variable api_key="$API_KEY" \
       --variable tenant="$TENANT" --variable source_id="$source_id" \
       03_verify_data.hurl || rc=1

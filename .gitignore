@@ -1,0 +1,5 @@
+# runtime service logs (tee'd from tmux windows)
+logs/
+# hurl audit logs from LIVE runs (may contain request bodies)
+hurl/*.log
+hurl/LIVE-audit-*.log
